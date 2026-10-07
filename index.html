@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz da Irlanda - Feira das Nações</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        ireland: {
+                            green: '#169B62',
+                            darkGreen: '#0D643F',
+                            orange: '#FF883E',
+                            lightOrange: '#FFA870',
+                            gold: '#FFD700',
+                            bg: '#F4FBF7'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Poppins', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #F4FBF7;
+            background-image: radial-gradient(#169B62 0.5px, transparent 0.5px), radial-gradient(#FF883E 0.5px, #F4FBF7 0.5px);
+            background-size: 24px 24px;
+            background-position: 0 0, 12px 12px;
+        }
+
+        .flag-accent {
+            border-top: 6px solid #169B62;
+            border-bottom: 6px solid #FF883E;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-6px); }
+            40%, 80% { transform: translateX(6px); }
+        }
+        .animate-shake {
+            animation: shake 0.35s ease-in-out;
+        }
+
+        @keyframes pop {
+            0% { transform: scale(0.98); }
+            50% { transform: scale(1.02); }
+            100% { transform: scale(1); }
+        }
+        .animate-pop {
+            animation: pop 0.25s ease-out;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between text-slate-800 antialiased selection:bg-ireland-green selection:text-white">
+
+    <header class="bg-white border-b-2 border-slate-100 shadow-sm sticky top-0 z-50">
+        <div class="max-w-3xl mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <span class="text-3xl text-ireland-green"><i class="fa-solid fa-clover"></i></span>
+                <div>
+                    <h1 class="font-extrabold text-lg md:text-xl text-slate-800 leading-tight">Feira das Nações</h1>
+                    <p class="text-xs text-ireland-green font-semibold tracking-wide uppercase">Estande da Irlanda 🇮🇪</p>
+                </div>
+            </div>
+            <!-- Flag Badge -->
+            <div class="flex h-6 w-10 rounded overflow-hidden shadow-sm border border-slate-200">
+                <div class="w-1/3 bg-[#169B62]"></div>
+                <div class="w-1/3 bg-white"></div>
+                <div class="w-1/3 bg-[#FF883E]"></div>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow flex items-center justify-center p-4">
+        <div class="w-full max-w-2xl bg-white rounded-3xl shadow-xl border border-slate-100 overflow-hidden flag-accent my-4 relative">
+
+            <div class="p-6 md:p-10">
+
+                <!-- TELA INICIAL -->
+                <div id="start-screen" class="text-center space-y-6">
+                    <div class="inline-flex items-center justify-center p-5 bg-emerald-50 rounded-full text-ireland-green text-5xl mb-1 shadow-inner border border-emerald-100">
+                        <i class="fa-solid fa-whiskey-glass text-ireland-orange mr-1"></i>
+                        <i class="fa-solid fa-clover text-ireland-green"></i>
+                    </div>
+
+                    <h2 class="text-3xl md:text-4xl font-extrabold text-slate-800 tracking-tight">
+                        Quiz da Irlanda
+                    </h2>
+                    
+                    <p class="text-slate-600 text-base leading-relaxed max-w-md mx-auto">
+                        Teste seus conhecimentos sobre a história, cultura, símbolos e curiosidades da Ilha Esmeralda!
+                    </p>
+
+                    <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100 flex justify-around items-center text-sm font-medium text-slate-600">
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-list-check text-ireland-green text-lg"></i>
+                            <span id="start-question-count">10 Perguntas</span>
+                        </div>
+                        <div class="h-4 w-px bg-slate-300"></div>
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-trophy text-ireland-orange text-lg"></i>
+                            <span>Aprenda Brincando</span>
+                        </div>
+                    </div>
+
+                    <button onclick="startQuiz()" class="w-full py-4 px-8 bg-ireland-green hover:bg-ireland-darkGreen text-white font-bold text-lg rounded-2xl shadow-lg hover:shadow-xl transform active:scale-95 transition duration-200 flex items-center justify-center gap-3">
+                        <span>Iniciar Quiz</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+
+                <!-- TELA DO QUIZ -->
+                <div id="quiz-screen" class="hidden space-y-6">
+                    <!-- Progress Bar Header -->
+                    <div class="space-y-2">
+                        <div class="flex justify-between items-center text-sm font-semibold text-slate-600">
+                            <span id="question-number-text" class="text-ireland-green font-bold">Pergunta 1 de 10</span>
+                            <span class="bg-amber-50 text-amber-800 px-3 py-1 rounded-full border border-amber-200 text-xs flex items-center gap-1 font-bold">
+                                <i class="fa-solid fa-star text-ireland-gold"></i> Acertos: <span id="current-score">0</span>
+                            </span>
+                        </div>
+                        <div class="w-full bg-slate-100 h-3 rounded-full overflow-hidden border border-slate-200">
+                            <div id="progress-bar" class="bg-gradient-to-r from-ireland-green to-ireland-orange h-full transition-all duration-300 rounded-full" style="width: 10%;"></div>
+                        </div>
+                    </div>
+
+                    <!-- PERGUNTAS DIRETAMENTE NO HTML COM DATA-ATTRIBUTES -->
+                    <div id="questions-wrapper">
+
+                        <!-- Pergunta 1 -->
+                        <article class="question-card hidden" data-correct="1">
+                            <h3 class="question-text text-xl md:text-2xl font-bold text-slate-800 leading-snug mb-5">
+                                1. Qual é a capital oficial da República da Irlanda?
+                            </h3>
+                            <div class="options-container space-y-3">
+                                <button onclick="checkAnswer(this, 0)" class="option-btn">Belfast</button>
+                                <button onclick="checkAnswer(this, 1)" class="option-btn">Dublin</button>
+                                <button onclick="checkAnswer(this, 2)" class="option-btn">Cork</button>
+                                <button onclick="checkAnswer(this, 3)" class="option-btn">Galway</button>
+                            </div>
+                            <div class="explanation-content hidden">
+                                Dublin é a capital e maior cidade da República da Irlanda. Belfast é a capital da Irlanda do Norte!
+                            </div>
+                        </article>
+
+                        <!-- Pergunta 2 -->
+                        <article class="question-card hidden" data-correct="2">
+                            <h3 class="question-text text-xl md:text-2xl font-bold text-slate-800 leading-snug mb-5">
+                                2. Qual é o apelido famoso dado à Irlanda devido às suas paisagens verdes?
+                            </h3>
+                            <div class="options-container space-y-3">
+                                <button onclick="checkAnswer(this, 0)" class="option-btn">Ilha Dourada</button>
+                                <button onclick="checkAnswer(this, 1)" class="option-btn">Ilha da Primavera</button>
+                                <button onclick="checkAnswer(this, 2)" class="option-btn">Ilha Esmeralda</button>
+                                <button onclick="checkAnswer(this, 3)" class="option-btn">Ilha do Sol</button>
+                            </div>
+                            <div class="explanation-content hidden">
+                                A Irlanda é conhecida mundialmente como a "Ilha Esmeralda" devido às suas paisagens verdes intensas decorrentes do clima úmido e chuvoso.
+                            </div>
+                        </article>
+
+                        <!-- Pergunta 3 -->
+                        <article class="question-card hidden" data-correct="1">
+                            <h3 class="question-text text-xl md:text-2xl font-bold text-slate-800 leading-snug mb-5">
+                                3. Qual planta de três folhas é o tradicional símbolo da Irlanda (usada por São Patrício)?
+                            </h3>
+                            <div class="options-container space-y-3">
+                                <button onclick="checkAnswer(this, 0)" class="option-btn">Samambaia</button>
+                                <button onclick="checkAnswer(this, 1)" class="option-btn">Trevo (Shamrock)</button>
+                                <button onclick="checkAnswer(this, 2)" class="option-btn">Manjerona</button>
+                                <button onclick="checkAnswer(this, 3)" class="option-btn">Rosa Branca</button>
+                            </div>
+                            <div class="explanation-content hidden">
+                                O Trevo (Shamrock) foi usado por São Patrício para explicar o mistério da Santíssima Trindade e virou ícone da cultura irlandesa.
+                            </div>
+                        </article>
+
+                        <!-- Pergunta 4 -->
+                        <article class="question-card hidden" data-correct="0">
+                            <h3 class="question-text text-xl md:text-2xl font-bold text-slate-800 leading-snug mb-5">
+                                4. Quais são as três cores oficiais da bandeira da República da Irlanda?
+                            </h3>
+                            <div class="options-container space-y-3">
+                                <button onclick="checkAnswer(this, 0)" class="option-btn">Verde, Branco e Laranja</button>
+                                <button onclick="checkAnswer(this, 1)" class="option-btn">Verde, Amarelo e Vermelho</button>
+                                <button onclick="checkAnswer(this, 2)" class="option-btn">Azul, Branco e Laranja</button>
+                                <button onclick="checkAnswer(this, 3)" class="option-btn">Verde, Amarelo e Azul</button>
+                            </div>
+                            <div class="explanation-content hidden">
+                                O verde representa a tradição gaélica, o laranja a comunidade protestante, e o branco no centro simboliza a paz entre ambas!
+                            </div>
+                        </article>
+
+                        <!-- Pergunta 5 -->
+                        <article class="question-card hidden" data-correct="2">
+                            <h3 class="question-text text-xl md:text-2xl font-bold text-slate-800 leading-snug mb-5">
+                                5. Qual ser folclórico do folclore irlandês cuida de um pote de ouro no fim do arco-íris?
+                            </h3>
+                            <div class="options-container space-y-3">
+                                <button onclick="checkAnswer(this, 0)" class="option-btn">Gnomo</button>
+                                <button onclick="checkAnswer(this, 1)" class="option-btn">Duende Florestal</button>
+                                <button onclick="checkAnswer(this, 2)" class="option-btn">Leprechaun</button>
+                                <button onclick="checkAnswer(this, 3)" class="option-btn">Banshee</button>
+                            </div>
+                            <div class="explanation-content hidden">
+                                Os Leprechauns são homenzinhos míticos da tradição celta, famosos por consertar sapatos e esconder seus potes de ouro!
+                            </div>
+                        </article>
+
+                        <!-- Pergunta 6 -->
+                        <article class="question-card hidden" data-correct="0">
+                            <h3 class="question-text text-xl md:text-2xl font-bold text-slate-800 leading-snug mb-5">
+                                6. Quais são os dois idiomas oficiais da República da Irlanda?
+                            </h3>
+                            <div class="options-container space-y-3">
+                                <button onclick="checkAnswer(this, 0)" class="option-btn">Irlandês (Gaélico) e Inglês</button>
+                                <button onclick="checkAnswer(this, 1)" class="option-btn">Inglês e Escocês</button>
+                                <button onclick="checkAnswer(this, 2)" class="option-btn">Irlandês e Francês</button>
+                                <button onclick="checkAnswer(this, 3)" class="option-btn">Galês e Inglês</button>
+                            </div>
+                            <div class="explanation-content hidden">
+                                O Irlandês (Gaeilge) é a língua nacional e primeira língua oficial, e o Inglês é a segunda língua oficial.
+                            </div>
+                        </article>
+
+                        <!-- Pergunta 7 -->
+                        <article class="question-card hidden" data-correct="2">
+                            <h3 class="question-text text-xl md:text-2xl font-bold text-slate-800 leading-snug mb-5">
+                                7. Qual instrumento musical histórico é o emblema oficial do governo da Irlanda?
+                            </h3>
+                            <div class="options-container space-y-3">
+                                <button onclick="checkAnswer(this, 0)" class="option-btn">Gaita de Fole</button>
+                                <button onclick="checkAnswer(this, 1)" class="option-btn">Violino Celta</button>
+                                <button onclick="checkAnswer(this, 2)" class="option-btn">Harpa Celta</button>
+                                <button onclick="checkAnswer(this, 3)" class="option-btn">Acordeão</button>
+                            </div>
+                            <div class="explanation-content hidden">
+                                A Harpa Celta aparece nas moedas de Euro da Irlanda e nos passaportes oficiais. A Irlanda é o único país a usar um instrumento musical como símbolo oficial!
+                            </div>
+                        </article>
+
+                        <!-- Pergunta 8 -->
+                        <article class="question-card hidden" data-correct="1">
+                            <h3 class="question-text text-xl md:text-2xl font-bold text-slate-800 leading-snug mb-5">
+                                8. Qual é a data do Saint Patrick's Day (Dia de São Patrício), a maior festa da cultura irlandesa?
+                            </h3>
+                            <div class="options-container space-y-3">
+                                <button onclick="checkAnswer(this, 0)" class="option-btn">25 de Dezembro</button>
+                                <button onclick="checkAnswer(this, 1)" class="option-btn">17 de Março</button>
+                                <button onclick="checkAnswer(this, 2)" class="option-btn">31 de Outubro</button>
+                                <button onclick="checkAnswer(this, 3)" class="option-btn">1º de Maio</button>
+                            </div>
+                            <div class="explanation-content hidden">
+                                O St. Patrick's Day é comemorado no dia 17 de Março, data em que as pessoas usam roupas verdes e celebram a cultura irlandesa pelo mundo inteiro!
+                            </div>
+                        </article>
+
+                        <!-- Pergunta 9 -->
+                        <article class="question-card hidden" data-correct="3">
+                            <h3 class="question-text text-xl md:text-2xl font-bold text-slate-800 leading-snug mb-5">
+                                9. Qual famoso rio atravessa o centro da cidade de Dublin?
+                            </h3>
+                            <div class="options-container space-y-3">
+                                <button onclick="checkAnswer(this, 0)" class="option-btn">Rio Tâmisa</button>
+                                <button onclick="checkAnswer(this, 1)" class="option-btn">Rio Sena</button>
+                                <button onclick="checkAnswer(this, 2)" class="option-btn">Rio Danúbio</button>
+                                <button onclick="checkAnswer(this, 3)" class="option-btn">Rio Liffey</button>
+                            </div>
+                            <div class="explanation-content hidden">
+                                O Rio Liffey divide Dublin entre a zona norte e a zona sul, passando por pontes históricas como a Ha'penny Bridge.
+                            </div>
+                        </article>
+
+                        <!-- Pergunta 10 -->
+                        <article class="question-card hidden" data-correct="1">
+                            <h3 class="question-text text-xl md:text-2xl font-bold text-slate-800 leading-snug mb-5">
+                                10. Qual atração natural famosa na Irlanda tem penhascos de 214 metros de altura voltados para o oceano?
+                            </h3>
+                            <div class="options-container space-y-3">
+                                <button onclick="checkAnswer(this, 0)" class="option-btn">Caminho dos Gigantes</button>
+                                <button onclick="checkAnswer(this, 1)" class="option-btn">Cliffs of Moher (Falésias de Moher)</button>
+                                <button onclick="checkAnswer(this, 2)" class="option-btn">Montanhas de Wicklow</button>
+                                <button onclick="checkAnswer(this, 3)" class="option-btn">Anel de Kerry</button>
+                            </div>
+                            <div class="explanation-content hidden">
+                                Os Cliffs of Moher são uma das maravilhas naturais mais incríveis da Europa, localizados na costa oeste atlântica da Irlanda.
+                            </div>
+                        </article>
+
+                    </div>
+
+                    <!-- Feedback Box (Explicação) -->
+                    <div id="feedback-box" class="hidden p-4 rounded-2xl text-sm leading-relaxed border transition-all duration-300">
+                        <div id="feedback-title" class="font-bold flex items-center gap-2 mb-1 text-base"></div>
+                        <div id="feedback-explanation" class="text-slate-700"></div>
+                    </div>
+
+                    <!-- Next Button -->
+                    <button id="next-btn" onclick="nextQuestion()" class="hidden w-full py-3.5 px-6 bg-ireland-orange hover:bg-ireland-lightOrange text-white font-bold text-base rounded-2xl shadow-md hover:shadow-lg transform active:scale-95 transition duration-200 flex items-center justify-center gap-2">
+                        <span id="next-btn-text">Próxima Pergunta</span>
+                        <i class="fa-solid fa-chevron-right text-sm"></i>
+                    </button>
+                </div>
+
+                <!-- TELA DE RESULTADO -->
+                <div id="result-screen" class="hidden text-center space-y-6">
+                    <div id="result-icon-box" class="inline-flex items-center justify-center p-6 bg-emerald-100 rounded-full text-ireland-green text-6xl shadow-inner border-2 border-emerald-200">
+                        <i id="result-icon" class="fa-solid fa-trophy"></i>
+                    </div>
+
+                    <div>
+                        <h2 id="result-title" class="text-3xl font-extrabold text-slate-800">
+                            Parabéns!
+                        </h2>
+                        <p id="result-subtitle" class="text-slate-600 mt-2 text-base">
+                            Você concluiu o Quiz da Irlanda!
+                        </p>
+                    </div>
+
+                    <!-- Score Card -->
+                    <div class="bg-slate-50 border border-slate-200 rounded-2xl p-6 max-w-sm mx-auto shadow-sm">
+                        <div class="text-xs uppercase font-bold text-slate-400 tracking-wider mb-1">Sua Pontuação Final</div>
+                        <div class="text-4xl font-black text-ireland-green my-1">
+                            <span id="final-correct">0</span> <span class="text-2xl font-normal text-slate-500">/ <span id="final-total">10</span></span>
+                        </div>
+                        <div id="final-percentage" class="text-sm font-semibold text-ireland-orange">
+                            100% de aproveitamento
+                        </div>
+                    </div>
+
+                    <!-- Message -->
+                    <p id="final-message" class="text-slate-700 bg-emerald-50/70 p-4 rounded-xl border border-emerald-100 text-sm md:text-base italic">
+                        Mensagem personalizada...
+                    </p>
+
+                    <button onclick="startQuiz()" class="w-full py-4 px-8 bg-ireland-green hover:bg-ireland-darkGreen text-white font-bold text-lg rounded-2xl shadow-lg hover:shadow-xl transform active:scale-95 transition duration-200 flex items-center justify-center gap-3">
+                        <i class="fa-solid fa-rotate-right"></i>
+                        <span>Jogar Novamente</span>
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <footer class="bg-white border-t border-slate-200 py-4 text-center text-xs text-slate-500">
+        <div style="text-align: center;">
+            <p> &copy; Quiz da Irlanda - Feira das Nações. Feito por adriana, davi, gabriel, pedro, alessandro</p>
+            
+        </div>
+    </footer>
+
+    <script>
+        let questionCards = [];
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let isAnswered = false;
+
+        const startScreen = document.getElementById('start-screen');
+        const quizScreen = document.getElementById('quiz-screen');
+        const resultScreen = document.getElementById('result-screen');
+
+        const questionNumberText = document.getElementById('question-number-text');
+        const currentScoreEl = document.getElementById('current-score');
+        const progressBar = document.getElementById('progress-bar');
+
+        const feedbackBox = document.getElementById('feedback-box');
+        const feedbackTitle = document.getElementById('feedback-title');
+        const feedbackExplanation = document.getElementById('feedback-explanation');
+        const nextBtn = document.getElementById('next-btn');
+        const nextBtnText = document.getElementById('next-btn-text');
+
+        // Web Audio API para efeitos sonoros leves
+        function playAudioEffect(type) {
+            try {
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                if (!AudioContext) return;
+                const ctx = new AudioContext();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+
+                if (type === 'correct') {
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(523.25, ctx.currentTime); // C5
+                    osc.frequency.exponentialRampToValueAtTime(659.25, ctx.currentTime + 0.12); // E5
+                    gain.gain.setValueAtTime(0.15, ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.25);
+                    osc.start();
+                    osc.stop(ctx.currentTime + 0.25);
+                } else {
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(220, ctx.currentTime); // A3
+                    osc.frequency.setValueAtTime(164.81, ctx.currentTime + 0.12); // E3
+                    gain.gain.setValueAtTime(0.15, ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.25);
+                    osc.start();
+                    osc.stop(ctx.currentTime + 0.25);
+                }
+            } catch (e) {
+                // Audio silenciado se não houver permissão do navegador
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            questionCards = Array.from(document.querySelectorAll('.question-card'));
+            document.getElementById('start-question-count').textContent = `${questionCards.length} Perguntas`;
+
+            // Formatar visualmente todos os botões no DOM
+            questionCards.forEach(card => {
+                const buttons = card.querySelectorAll('.option-btn');
+                const letters = ['A', 'B', 'C', 'D'];
+
+                buttons.forEach((btn, index) => {
+                    const text = btn.textContent.trim();
+                    btn.className = "w-full text-left p-4 rounded-2xl border-2 border-slate-200 bg-white hover:border-ireland-green hover:bg-emerald-50/50 transition-all duration-150 flex items-center justify-between gap-3 font-medium text-slate-700 active:scale-[0.99] cursor-pointer";
+                    btn.innerHTML = `
+                        <div class="flex items-center gap-3">
+                            <span class="badge-letter w-8 h-8 rounded-xl bg-slate-100 font-bold text-slate-500 flex items-center justify-center text-sm flex-shrink-0 transition-colors">${letters[index]}</span>
+                            <span class="btn-text flex-grow">${text}</span>
+                        </div>
+                        <span class="icon-indicator text-lg font-bold flex items-center justify-center w-6"></span>
+                    `;
+                });
+            });
+        });
+
+        function startQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            currentScoreEl.textContent = '0';
+
+            startScreen.classList.add('hidden');
+            resultScreen.classList.add('hidden');
+            quizScreen.classList.remove('hidden');
+
+            displayCurrentQuestion();
+        }
+
+        function displayCurrentQuestion() {
+            isAnswered = false;
+
+            // Ocultar todas as cartas
+            questionCards.forEach(card => card.classList.add('hidden'));
+
+            // Exibir apenas a carta atual
+            const activeCard = questionCards[currentQuestionIndex];
+            activeCard.classList.remove('hidden');
+
+            // Atualizar cabeçalho e progresso
+            questionNumberText.textContent = `Pergunta ${currentQuestionIndex + 1} de ${questionCards.length}`;
+            const progress = ((currentQuestionIndex + 1) / questionCards.length) * 100;
+            progressBar.style.width = `${progress}%`;
+
+            // Esconder feedback e botão de avançar
+            feedbackBox.classList.add('hidden');
+            nextBtn.classList.add('hidden');
+
+            // Resetar estilos dos botões da pergunta ativa caso seja reinício
+            const buttons = activeCard.querySelectorAll('.option-btn');
+            buttons.forEach(btn => {
+                btn.disabled = false;
+                btn.className = "w-full text-left p-4 rounded-2xl border-2 border-slate-200 bg-white hover:border-ireland-green hover:bg-emerald-50/50 transition-all duration-150 flex items-center justify-between gap-3 font-medium text-slate-700 active:scale-[0.99] cursor-pointer";
+                const badge = btn.querySelector('.badge-letter');
+                if (badge) {
+                    badge.className = "badge-letter w-8 h-8 rounded-xl bg-slate-100 font-bold text-slate-500 flex items-center justify-center text-sm flex-shrink-0 transition-colors";
+                }
+                const icon = btn.querySelector('.icon-indicator');
+                if (icon) {
+                    icon.innerHTML = '';
+                }
+            });
+        }
+
+        function checkAnswer(clickedBtn, selectedIndex) {
+            if (isAnswered) return; // Evita múltiplos cliques na mesma pergunta
+            isAnswered = true;
+
+            const activeCard = questionCards[currentQuestionIndex];
+            const correctIndex = parseInt(activeCard.getAttribute('data-correct'));
+            const isCorrect = selectedIndex === correctIndex;
+            const buttons = activeCard.querySelectorAll('.option-btn');
+            const explanationText = activeCard.querySelector('.explanation-content').textContent.trim();
+
+            // Desabilitar todos os botões e aplicar estilos visuais
+            buttons.forEach((btn, idx) => {
+                btn.disabled = true;
+                btn.classList.remove('hover:border-ireland-green', 'hover:bg-emerald-50/50', 'active:scale-[0.99]', 'cursor-pointer');
+                btn.classList.add('cursor-default');
+
+                const badge = btn.querySelector('.badge-letter');
+                const icon = btn.querySelector('.icon-indicator');
+
+                if (idx === correctIndex) {
+                    // RESPOSTA CORRETA (Fica sempre verde com ícone de acerto)
+                    btn.className = "w-full text-left p-4 rounded-2xl border-2 border-ireland-green bg-emerald-50 font-bold text-emerald-900 flex items-center justify-between gap-3 transition-all duration-150 animate-pop";
+                    badge.className = "badge-letter w-8 h-8 rounded-xl bg-ireland-green text-white font-bold flex items-center justify-center text-sm flex-shrink-0";
+                    icon.innerHTML = `<i class="fa-solid fa-circle-check text-ireland-green text-xl"></i>`;
+                } else if (idx === selectedIndex && !isCorrect) {
+                    // RESPOSTA SELECIONADA QUE ESTÁ ERRADA (Fica vermelha com ícone de erro)
+                    btn.className = "w-full text-left p-4 rounded-2xl border-2 border-red-500 bg-red-50 font-bold text-red-900 flex items-center justify-between gap-3 transition-all duration-150 animate-shake";
+                    badge.className = "badge-letter w-8 h-8 rounded-xl bg-red-500 text-white font-bold flex items-center justify-center text-sm flex-shrink-0";
+                    icon.innerHTML = `<i class="fa-solid fa-circle-xmark text-red-500 text-xl"></i>`;
+                } else {
+                    // DEMAIS OPÇÕES DESATIVADAS
+                    btn.classList.add('opacity-40');
+                }
+            });
+
+            // Som e atualização do placar
+            if (isCorrect) {
+                score++;
+                currentScoreEl.textContent = score;
+                playAudioEffect('correct');
+
+                feedbackBox.className = "p-4 rounded-2xl text-sm leading-relaxed border transition-all duration-300 bg-emerald-50 border-emerald-200 text-emerald-900";
+                feedbackTitle.innerHTML = `<i class="fa-solid fa-circle-check text-ireland-green text-lg"></i> Certo! Parabéns!`;
+            } else {
+                playAudioEffect('wrong');
+
+                feedbackBox.className = "p-4 rounded-2xl text-sm leading-relaxed border transition-all duration-300 bg-amber-50 border-amber-200 text-amber-900";
+                feedbackTitle.innerHTML = `<i class="fa-solid fa-circle-xmark text-red-500 text-lg"></i> Ah, incorreto!`;
+            }
+
+            // Exibir a explicação
+            feedbackExplanation.textContent = explanationText;
+            feedbackBox.classList.remove('hidden');
+
+            // Configurar botão de próxima pergunta
+            if (currentQuestionIndex === questionCards.length - 1) {
+                nextBtnText.textContent = "Ver Resultado Final";
+            } else {
+                nextBtnText.textContent = "Próxima Pergunta";
+            }
+            nextBtn.classList.remove('hidden');
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+
+            if (currentQuestionIndex < questionCards.length) {
+                displayCurrentQuestion();
+            } else {
+                showFinalResults();
+            }
+        }
+
+        function showFinalResults() {
+            quizScreen.classList.add('hidden');
+            resultScreen.classList.remove('hidden');
+
+            const total = questionCards.length;
+            const percentage = Math.round((score / total) * 100);
+
+            document.getElementById('final-correct').textContent = score;
+            document.getElementById('final-total').textContent = total;
+            document.getElementById('final-percentage').textContent = `${percentage}% de aproveitamento`;
+
+            const iconBox = document.getElementById('result-icon-box');
+            const icon = document.getElementById('result-icon');
+            const title = document.getElementById('result-title');
+            const subtitle = document.getElementById('result-subtitle');
+            const message = document.getElementById('final-message');
+
+            if (percentage === 100) {
+                icon.className = "fa-solid fa-crown text-ireland-gold";
+                iconBox.className = "inline-flex items-center justify-center p-6 bg-amber-100 rounded-full text-ireland-gold text-6xl shadow-inner border-2 border-amber-300";
+                title.textContent = "¡Especialista em Irlanda!";
+                subtitle.textContent = "Perfeito! Você acertou todas as perguntas!";
+                message.textContent = " Excelente! Você é um verdadeiro expert na Ilha Esmeralda e nos símbolos da Irlanda!";
+            } else if (percentage >= 60) {
+                icon.className = "fa-solid fa-trophy text-ireland-orange";
+                iconBox.className = "inline-flex items-center justify-center p-6 bg-orange-100 rounded-full text-ireland-orange text-6xl shadow-inner border-2 border-orange-200";
+                title.textContent = "Muito Bom!";
+                subtitle.textContent = "Você mandou muito bem no quiz!";
+                message.textContent = " Parabéns! Você demonstrou ótimos conhecimentos sobre a cultura e a história da Irlanda.";
+            } else {
+                icon.className = "fa-solid fa-clover text-ireland-green";
+                iconBox.className = "inline-flex items-center justify-center p-6 bg-emerald-100 rounded-full text-ireland-green text-6xl shadow-inner border-2 border-emerald-200";
+                title.textContent = "Bom Trabalho!";
+                subtitle.textContent = "Você aprendeu novas curiosidades hoje!";
+                message.textContent = " Que tal jogar mais uma vez para tentar acertar todas e garantir a pontuação máxima?";
+            }
+        }
+    </script>
+</body>
+</html>
